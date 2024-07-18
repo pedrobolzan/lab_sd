@@ -5,8 +5,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 -- Declaração da entidade multiplicador4Digitos
 entity multiplicador4Digitos is
     -- Portas de entrada e saída
-    Port ( entradaA, entradaB : in  std_logic_vector (15 downto 0); -- Entradas A e B, vetores de 16 bits
-           saida : out  std_logic_vector (31 downto 0)); -- Saída, vetor de 32 bits
+    Port ( entradaA, entradaB : in  std_logic_vector (15 downto 0); 
+           saida : out  std_logic_vector (31 downto 0)); 
 end multiplicador4Digitos;
 
 -- Arquitetura comportamental do multiplicador4Digitos
@@ -22,7 +22,6 @@ architecture Behavioral of multiplicador4Digitos is
     signal digitoA1, digitoA2, digitoA3, 
         digitoA4, digitoB1, digitoB2, 
         digitoB3, digitoB4 : std_logic_vector (3 downto 0); 
-		-- Vetores de 4 bits para cada dígito
 
     -- Sinais para armazenar os resultados parciais da multiplicação
     signal resultadoMultParcial1, resultadoMultParcial2, 
@@ -45,12 +44,10 @@ architecture Behavioral of multiplicador4Digitos is
 	-- Sinais para armazenar os produtos parciais da multiplicação
 	signal produtoParcial1, produtoParcial2, 
 			produtoParcial3, produtoParcial4 : 
-			std_logic_vector (31 downto 0); 
-	-- Vetores de 32 bits para cada produto parcial
+			std_logic_vector (31 downto 0);
 	
 	-- Sinal para armazenar o resultado da multiplicação sem considerar os carries
 	signal resultadoMultiplicacaoSemCarry:unsigned (31 downto 0); 
-	-- Vetor de 32 bits para o resultado sem carry
 	
 	-- Sinais para os dígitos do resultado da multiplicação
 	signal digitoResultado1, digitoResultado2, 
@@ -148,8 +145,8 @@ begin
 																	  resultadoMultParcial17);
 	
 	-- Construção dos produtos parciais, alinhando os resultados das multiplicações 
-	-- parciais com zeros à esquerda ou à direita conforme necessário
-	-- para preparar para a soma. Cada produto parcial é construído concatenando 
+	-- parciais com zeros à esquerda ou à direita conforme necessário. 
+	-- Cada produto parcial é construído concatenando 
 	-- os resultados das multiplicações parciais com zeros para alinhamento.
 
 	-- Produto parcial 1 é formado pela concatenação dos quatro primeiros 
@@ -208,8 +205,8 @@ begin
 		
 
 		-- Repete o processo para os demais dígitos, considerando o carry do dígito anterior
-    	-- Cada dígito é ajustado com base no seu valor e no carry recebido do dígito anterior
-    	-- Se o resultado da soma do dígito com o carry anterior exceder 9, ajusta o valor e propaga o carry
+    	-- Cada um é ajustado com base no seu valor e no carry recebido do anterior
+    	-- Se o resultado da soma com o carry anterior exceder 9, ajusta o valor e propaga o carry
 		if (digitoResultado2 + carryDigito1) > "1001" then
 			digitoResultadoFinal2 <= digitoResultado2 + carryDigito1 - "1010";
 			carryDigito2 <= "0001";
@@ -258,7 +255,7 @@ begin
 			digitoResultadoFinal7 <= digitoResultado7 + carryDigito6;
 		end if;
 		
-		
+
 		-- O último dígito é ajustado com o último carry, sem necessidade de verificar excedente
 		digitoResultadoFinal8 <= digitoResultado8 + carryDigito7;
 	end process;
