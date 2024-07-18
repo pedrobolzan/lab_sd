@@ -1,35 +1,7 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    17:21:56 07/12/2024 
--- Design Name: 
--- Module Name:    CODIGO_TOP_LEVEL_TECLADO - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
-----------------------------------------------------------------------------------
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+-- Listing 8.3
+library ieee;
+use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity kb_code is
    generic(W_SIZE: integer:=1);  -- 2^W_SIZE words in FIFO
    port (
@@ -61,6 +33,7 @@ begin
 
                rx_done_tick=>scan_done_tick,
                dout=>scan_out);
+
    fifo_key_unit: entity work.fifo(arch)
       generic map(B=>8, W=>W_SIZE)
       port map(clk=>clk, reset=>reset, rd=>rd_key_code,
@@ -72,7 +45,7 @@ begin
 	conv_number: entity work.key2ascii(arch) 
 		port map(key_code=>key_code, 
 			ascii_code=>number_code);
-			
+
    --=======================================================
    -- FSM to get the scan code after F0 received
    --=======================================================
@@ -84,7 +57,7 @@ begin
          state_reg <= state_next;
       end if;
    end process;
-	
+
    process(state_reg, scan_done_tick, scan_out)
    begin
       got_code_tick <='0';
@@ -94,7 +67,6 @@ begin
             if scan_done_tick='1' and scan_out=BRK then
                state_next <= get_code;
             end if;
-
          when get_code => -- get the following scan code
             if scan_done_tick='1' then
                got_code_tick <='1';

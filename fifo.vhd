@@ -1,35 +1,7 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    17:08:38 07/12/2024 
--- Design Name: 
--- Module Name:    fifo - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
-----------------------------------------------------------------------------------
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+-- Listing 4.20
+library ieee;
+use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity fifo is
    generic(
       B: natural:=8; -- number of bits
@@ -70,7 +42,7 @@ begin
                  <= w_data;
         end if;
      end if;
-	  end process;
+   end process;
    -- read port
    r_data <= array_reg(to_integer(unsigned(r_ptr_reg)));
    -- write enabled only when FIFO is not full
@@ -81,7 +53,7 @@ begin
    --=================================================
    -- register for read and write pointers
    process(clk,reset)
-	begin
+   begin
       if (reset='1') then
          w_ptr_reg <= (others=>'0');
          r_ptr_reg <= (others=>'0');
@@ -94,8 +66,8 @@ begin
          empty_reg <= empty_next;
       end if;
    end process;
-	
-	-- successive pointer values
+
+   -- successive pointer values
    w_ptr_succ <= std_logic_vector(unsigned(w_ptr_reg)+1);
    r_ptr_succ <= std_logic_vector(unsigned(r_ptr_reg)+1);
 
@@ -103,7 +75,7 @@ begin
    wr_op <= wr & rd;
    process(w_ptr_reg,w_ptr_succ,r_ptr_reg,r_ptr_succ,wr_op,
            empty_reg,full_reg)
-	begin
+   begin
       w_ptr_next <= w_ptr_reg;
       r_ptr_next <= r_ptr_reg;
       full_next <= full_reg;
@@ -118,7 +90,7 @@ begin
                   empty_next <='1';
                end if;
             end if;
-				when "10" => -- write
+         when "10" => -- write
             if (full_reg /= '1') then -- not full
                w_ptr_next <= w_ptr_succ;
                empty_next <= '0';
@@ -130,9 +102,10 @@ begin
             w_ptr_next <= w_ptr_succ;
             r_ptr_next <= r_ptr_succ;
       end case;
-		end process;
+   end process;
    -- output
    full <= full_reg;
    empty <= empty_reg;
 end arch;
+
 

@@ -1,35 +1,7 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    17:03:52 07/12/2024 
--- Design Name: 
--- Module Name:    list_ch08_01_ps2_rx - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
-----------------------------------------------------------------------------------
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+-- Listing 8.1
+library ieee;
+use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity ps2_rx is
    port (
       clk, reset: in  std_logic;
@@ -63,8 +35,8 @@ begin
          f_ps2c_reg <= f_ps2c_next;
       end if;
    end process;
-	
-	filter_next <= ps2c & filter_reg(7 downto 1);
+
+   filter_next <= ps2c & filter_reg(7 downto 1);
    f_ps2c_next <= '1' when filter_reg="11111111" else
                   '0' when filter_reg="00000000" else
                   f_ps2c_reg;
@@ -75,7 +47,7 @@ begin
    --=================================================
    -- registers
    process (clk, reset)
-	begin
+   begin
       if reset='1' then
          state_reg <= idle;
          n_reg  <= (others=>'0');
@@ -86,7 +58,7 @@ begin
          b_reg <= b_next;
       end if;
    end process;
-	 -- next-state logic
+   -- next-state logic
    process(state_reg,n_reg,b_reg,fall_edge,rx_en,ps2d)
    begin
       rx_done_tick <='0';
@@ -101,7 +73,7 @@ begin
                n_next <= "1001";
                state_next <= dps;
             end if;
-				when dps =>  -- 8 data + 1 pairty + 1 stop
+         when dps =>  -- 8 data + 1 pairty + 1 stop
             if fall_edge='1' then
             b_next <= ps2d & b_reg(10 downto 1);
                if n_reg = 0 then
@@ -115,7 +87,7 @@ begin
             state_next <= idle;
             rx_done_tick <='1';
       end case;
-		end process;
+   end process;
    -- output
    dout <= b_reg(8 downto 1); -- data bits
 end arch;

@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    16:25:51 06/21/2024 
+-- Create Date:    09:30:53 11/18/2022 
 -- Design Name: 
--- Module Name:    somaDigito - Behavioral 
+-- Module Name:    SOMA1DIGITO - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -30,34 +30,34 @@ use IEEE.numeric_std.all;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity somaDigito is
-    Port ( entradaA, entradaB : in  STD_LOGIC_VECTOR (3 downto 0);
-			  carry_in : in STD_LOGIC_VECTOR (3 downto 0) := "0000";
-			  carry_out : out STD_LOGIC_VECTOR (3 downto 0) := "0000";
-           soma : out  STD_LOGIC_VECTOR (3 downto 0));
-end somaDigito;
+entity SOMA1DIGITO is
+    Port ( A : in  STD_LOGIC_VECTOR (3 downto 0);
+           B : in  STD_LOGIC_VECTOR (3 downto 0);
+           Cin : in  STD_LOGIC_VECTOR (3 downto 0);
+           Cout : out  STD_LOGIC_VECTOR (3 downto 0);
+           RESULT : out  STD_LOGIC_VECTOR (3 downto 0));
+end SOMA1DIGITO;
 
-architecture Behavioral of somaDigito is
+architecture Behavioral of SOMA1DIGITO is
 
-    signal resultado:unsigned (3 downto 0):= "0000";
-	 signal aux:unsigned (4 downto 0):= "00000";
-	 
+signal resulta:unsigned (3 downto 0):="0000";
+signal resulta2:unsigned (3 downto 0):="0000";
+
 begin
+
+	resulta2 <= unsigned(A) + unsigned(B) + unsigned(Cin);
 	
-	aux <= '0' & unsigned(entradaA) + unsigned(entradaB) + unsigned(carry_in);
-	
-	calculaCarry : process(aux) is
+	SOMA: process(resulta2) is
 	begin
-		if aux >= "01010" then
-			carry_out <= "0001";
-			resultado <= aux (3 downto 0) - "1010";
+		if resulta2 >= "1010" then
+			Cout <= "0001";
+			resulta <= resulta2 - "1010";
 		else
-			carry_out <= "0000";
-			resultado <= aux (3 downto 0);
+			Cout <= "0000";
+			resulta <= resulta2;
 		end if;
 	end process;
-	
-	soma <= std_logic_vector(resultado);
+	RESULT <= std_logic_vector(resulta);
 
 end Behavioral;
 
