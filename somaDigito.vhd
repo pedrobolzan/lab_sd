@@ -1,63 +1,40 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    16:25:51 06/21/2024 
--- Design Name: 
--- Module Name:    somaDigito - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
-----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.numeric_std.all;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity somaDigito is
-    Port ( entradaA, entradaB : in  STD_LOGIC_VECTOR (3 downto 0);
-			  carry_in : in STD_LOGIC_VECTOR (3 downto 0) := "0000";
-			  carry_out : out STD_LOGIC_VECTOR (3 downto 0) := "0000";
-           soma : out  STD_LOGIC_VECTOR (3 downto 0));
+    Port (
+        entradaA, entradaB : in STD_LOGIC_VECTOR (3 downto 0); 
+        carry_in : in STD_LOGIC_VECTOR (3 downto 0) := "0000"; 
+        carry_out : out STD_LOGIC_VECTOR (3 downto 0) := "0000";
+        soma : out STD_LOGIC_VECTOR (3 downto 0) 
+    );
 end somaDigito;
 
 architecture Behavioral of somaDigito is
-
-    signal resultado:unsigned (3 downto 0):= "0000";
-	 signal aux:unsigned (4 downto 0):= "00000";
-	 
+    -- Sinal interno para armazenar o resultado temporário da soma, 4 bits
+    signal resultado: unsigned (3 downto 0) := "0000";
+    -- Sinal interno auxiliar para calcular a soma e o carry, 5 bits para acomodar o carry out
+    signal aux: unsigned (4 downto 0) := "00000";
+     
 begin
-	
-	aux <= '0' & unsigned(entradaA) + unsigned(entradaB) + unsigned(carry_in);
-	
-	calculaCarry : process(aux) is
-	begin
-		if aux >= "01010" then
-			carry_out <= "0001";
-			resultado <= aux (3 downto 0) - "1010";
-		else
-			carry_out <= "0000";
-			resultado <= aux (3 downto 0);
-		end if;
-	end process;
-	
-	soma <= std_logic_vector(resultado);
+    -- Calcula a soma dos vetores de entrada e o carry_in, armazenando o resultado em 'aux'
+    aux <= '0' & unsigned(entradaA) + unsigned(entradaB) + unsigned(carry_in);
+    
+    -- Processo para calcular o carry_out e ajustar o resultado com base no valor de 'aux'
+    calculaCarry : process(aux) is
+    begin
+        if aux >= "01010" then -- Se 'aux' indica um carry (valor >= 10 em binário)
+            carry_out <= "0001"; -- Define carry_out como 1
+            resultado <= aux (3 downto 0) - "1010"; -- Ajusta o resultado subtraindo 10 (1010 em binário)
+        else -- Se não houver carry
+            carry_out <= "0000"; -- Define carry_out como 0
+            resultado <= aux (3 downto 0); -- O resultado é igual aos 4 bits menos significativos de 'aux'
+        end if;
+    end process;
+    
+    -- Atribui o valor de 'resultado' ao sinal de saída 'soma', convertendo de unsigned para std_logic_vector
+    soma <= std_logic_vector(resultado);
 
 end Behavioral;
 
